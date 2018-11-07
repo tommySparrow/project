@@ -1,0 +1,1 @@
+eureka: 服务启动注解 @EnableEurekaServer
