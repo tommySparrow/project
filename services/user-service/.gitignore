@@ -23,3 +23,7 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+### 自定义 ###
+mvnw
+mvnw.cmd
+.mvn
