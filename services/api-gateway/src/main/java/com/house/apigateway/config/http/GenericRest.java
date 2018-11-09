@@ -21,22 +21,22 @@ public class GenericRest {
 	@Autowired
 	private RestTemplate directRestTemplate;
 	
-	private static final String directFlag = "direct://";
+	private static final String DIRECT_FLAG = "direct://";
 	
 	public <T> ResponseEntity<T> post(String url, Object reqBody, ParameterizedTypeReference<T> responseType){
 		RestTemplate template = getRestTemplate(url);
-		url = url.replace(directFlag, "");
-		return template.exchange(url, HttpMethod.POST,new HttpEntity(reqBody),responseType);
+		url = url.replace(DIRECT_FLAG, "");
+		return template.exchange(url, HttpMethod.POST,new HttpEntity<>(reqBody),responseType);
 	}
 	
 	public <T> ResponseEntity<T> get(String url, ParameterizedTypeReference<T> responseType){
 		RestTemplate template = getRestTemplate(url);
-		url = url.replace(directFlag, "");
+		url = url.replace(DIRECT_FLAG, "");
 		return template.exchange(url, HttpMethod.GET, HttpEntity.EMPTY,responseType);
 	}
 
 	private RestTemplate getRestTemplate(String url) {
-		if (url.contains(directFlag)) {
+		if (url.contains(DIRECT_FLAG)) {
 			return directRestTemplate;
 		}else {
 			return lbRestTemplate;
