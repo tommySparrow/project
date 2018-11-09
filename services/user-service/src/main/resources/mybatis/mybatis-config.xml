@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <!-- 配置关闭缓存  -->
+        <setting name="cacheEnabled" value="false"/>
+        <!-- 驼峰匹配  -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!--设置useGeneratedKeys为true，返回数据库自动生成的记录主键id-->
+        <setting name="useGeneratedKeys" value="true"/>
+        <setting name="defaultExecutorType" value="REUSE"/>
+        <!-- 事务超时时间 -->
+        <setting name="defaultStatementTimeout" value="600"/>
+        <!-- 打印sql日志 -->
+        <setting name="logImpl" value="STDOUT_LOGGING" />
+    </settings>
+
+    <!--别名-->
+    <typeAliases>
+        <package name="com.house.userservice.bean"/>
+    </typeAliases>
+
+    <plugins>
+        <!-- 通用Mapper -->
+        <plugin interceptor="com.github.abel533.mapperhelper.MapperInterceptor">
+            <!--主键自增回写方法,默认值MYSQL,详细说明请看文档 -->
+            <property name="IDENTITY" value="MYSQL" />
+            <!--通用Mapper接口，多个通用接口用逗号隔开 -->
+            <property name="mappers" value="com.github.abel533.mapper.Mapper" />
+        </plugin>
+    </plugins>
+
+</configuration>
