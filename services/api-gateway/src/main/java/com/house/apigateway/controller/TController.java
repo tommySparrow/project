@@ -1,6 +1,6 @@
 package com.house.apigateway.controller;
 
-import com.house.apigateway.config.http.HttpClientProperties;
+import com.house.apigateway.service.TestTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class TController {
 
     @Autowired
-    private HttpClientProperties httpClientProperties;
+    private TestTemplateService testTemplateService;
 
-    @RequestMapping("/test")
-    public String test(){
-        return httpClientProperties.getAgent();
+    @RequestMapping("/getUser")
+    public String test(Integer id){
+        return testTemplateService.test(id);
     }
 }
