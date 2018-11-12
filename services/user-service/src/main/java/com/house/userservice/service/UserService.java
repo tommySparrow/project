@@ -207,4 +207,11 @@ public class UserService {
         }
         throw new UserException(UserException.Type.USER_NOT_FOUND,"User not found for " + email);
     }
+
+    public void invalidateUser(String token) {
+
+        Map<String, String> map = JwtHelper.verifyToken(token);
+        String email = map.get("email");
+        redisTemplate.delete(email);
+    }
 }

@@ -78,4 +78,11 @@ public class UserController {
         return RestResponse.success(finalUser);
     }
 
+    @RequestMapping("/logOut")
+    public RestResponse<User> logOut(String token){
+
+        userService.invalidateUser(token);
+        return RestResponse.success();
+    }
+
 }
