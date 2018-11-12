@@ -13,4 +13,6 @@ public interface UserMapper {
     int insert(User user);
 
     int update(User user);
+
+    User selectByEmail(String email);
 }

@@ -85,4 +85,11 @@ public class UserController {
         return RestResponse.success();
     }
 
+    @RequestMapping("/update")
+    public RestResponse<User> updateUser(@RequestBody User user){
+
+        User updateUser = userService.updateUser(user);
+        return RestResponse.success(updateUser);
+    }
+
 }

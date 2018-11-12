@@ -95,4 +95,10 @@
         where email = #{email}
     </update>
 
+    <select id="selectByEmail" resultType="user">
+        select <include refid="userField"/>
+        from user
+        where email = #{email}
+    </select>
+
 </mapper>

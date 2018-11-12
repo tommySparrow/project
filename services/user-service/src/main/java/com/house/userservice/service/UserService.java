@@ -214,4 +214,17 @@ public class UserService {
         String email = map.get("email");
         redisTemplate.delete(email);
     }
+
+    public User updateUser(User user) {
+
+        if (user.getEmail().isEmpty()) {
+            return null;
+        }
+        if (Strings.isNullOrEmpty(user.getPasswd())){
+            user.setPasswd(HashUtils.encryPassword(user.getPasswd()));
+        }
+        userMapper.update(user);
+        //返回更新后的用户对象
+        return userMapper.selectByEmail(user.getEmail());
+    }
 }
