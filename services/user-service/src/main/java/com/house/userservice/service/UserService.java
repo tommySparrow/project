@@ -2,17 +2,21 @@ package com.house.userservice.service;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 import com.house.userservice.bean.User;
 import com.house.userservice.common.excection.UserException;
 import com.house.userservice.mapper.UserMapper;
 import com.house.userservice.utils.BeanHelper;
 import com.house.userservice.utils.HashUtils;
+import com.house.userservice.utils.JwtHelper;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -125,5 +129,49 @@ public class UserService {
         user.setEnable(1);
         userMapper.update(user);
         return true;
+    }
+
+    /**
+     * @ Author jmy
+     * @ Description //TODO User
+     * @ Date 2018/11/12
+     * @ Param [email, passwd]
+     * @ return com.house.userservice.bean.User
+     *校验用户名密码、生成token并返回用户对象
+     **/
+    public User auth(String email, String passwd) {
+
+        if (StringUtils.isBlank(email) || StringUtils.isBlank(passwd)){
+
+            throw new UserException(UserException.Type.USER_AUTH_FAIL, "auth is fall");
+        }
+        //通过用户名,密码查询对应的商户
+        User user = new User();
+        user.setEnable(1);
+        user.setEmail(email);
+        user.setPasswd(HashUtils.encryPassword(passwd));
+
+        List<User> userList = getUserByUser(user);//获取用户对象,并拼接头像地址
+        if (!userList.isEmpty()) {
+
+            User u = userList.get(0);
+            onLogin(u);//登录时,对登录的用户进行处理(生成token,保存token;封装user对象信息)
+            return u;
+        }
+        throw new UserException(UserException.Type.USER_AUTH_FAIL,"User Auth Fail");
+    }
+
+    private void onLogin(User u) {
+        //使用工具类,生成token值
+        String token = JwtHelper.genToken(ImmutableMap.of("email", u.getEmail(), "name", u.getName(), "ts",
+                Instant.now().getEpochSecond() + ""));
+        renewToke(token,u.getEmail());//刷新Redis存储的token
+        u.setToken(token);
+    }
+
+    private void renewToke(String token, String email) {
+
+        redisTemplate.opsForValue().set(email, token);
+        redisTemplate.expire(email, 30, TimeUnit.MINUTES);
     }
 }

@@ -54,6 +54,12 @@ public class UserController {
         userService.enable(key);
         return RestResponse.success();
     }
+//------------------------登录/鉴权--------------------------
 
+    @RequestMapping("/auth")
+    public RestResponse<User> auth(@RequestBody User user){
 
+        User finalUser = userService.auth(user.getEmail(),user.getPasswd());
+        return RestResponse.success(finalUser);
+    }
 }
