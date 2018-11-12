@@ -62,4 +62,20 @@ public class UserController {
         User finalUser = userService.auth(user.getEmail(),user.getPasswd());
         return RestResponse.success(finalUser);
     }
+
+    /**
+     * @ Author jmy
+     * @ Description //TODO User
+     * @ Date 2018/11/12
+     * @ Param [token]
+     * @ return com.house.userservice.config.respone.RestResponse<com.house.userservice.bean.User>
+     * 根据token获取对象
+     **/
+    @RequestMapping("/get")
+    public RestResponse<User> getUser(String token){
+
+        User finalUser = userService.getLoginUserByToken(token);
+        return RestResponse.success(finalUser);
+    }
+
 }

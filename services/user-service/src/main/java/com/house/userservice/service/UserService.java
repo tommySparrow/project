@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -173,5 +174,37 @@ public class UserService {
 
         redisTemplate.opsForValue().set(email, token);
         redisTemplate.expire(email, 30, TimeUnit.MINUTES);
+    }
+
+    public User getLoginUserByToken(String token) {
+
+        Map<String, String> map = JwtHelper.verifyToken(token);
+        String email = "";
+        if (!map.isEmpty()) {
+            email = map.get("email");
+        }else {
+            throw new UserException(UserException.Type.USER_NOT_LOGIN, "user not login");
+        }
+        //获取该key值过期时间
+        Long expire = redisTemplate.getExpire(email);
+        if (expire>0) {
+            renewToke(token, email);//刷新token
+            //重新封装对象的token值
+            User user = getUserByEmail(email);
+            user.setToken(token);
+            return user;
+        }
+        throw new UserException(UserException.Type.USER_NOT_LOGIN,"user not login");
+    }
+
+    private User getUserByEmail(String email) {
+
+        User user = new User();
+        user.setEmail(email);
+        List<User> userList = getUserByUser(user);
+        if (userList.size()>0){
+            return userList.get(0);
+        }
+        throw new UserException(UserException.Type.USER_NOT_FOUND,"User not found for " + email);
     }
 }
