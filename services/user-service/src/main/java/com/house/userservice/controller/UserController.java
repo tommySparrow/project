@@ -38,4 +38,22 @@ public class UserController {
         List<User> userList = userService.getUserByUser(user);
         return RestResponse.success(userList);
     }
+
+    //----------------------注册----------------------------------
+
+    @RequestMapping("/add")
+    public RestResponse<User> add(@RequestBody User user){
+
+        userService.addUser(user);
+        return RestResponse.success();
+    }
+
+    @RequestMapping("/enable")
+    public RestResponse<User> enableUser(String key){
+
+        userService.enable(key);
+        return RestResponse.success();
+    }
+
+
 }

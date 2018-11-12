@@ -46,5 +46,53 @@
         </where>
     </select>
 
+    <!--添加用户-->
+    <insert id="insert">
+    insert into  user (
+	                 name,
+                     phone,
+                     email,
+                     aboutme,
+                     passwd,
+                     avatar,
+                     type,
+                     create_time,
+                     enable
+                     )
+
+                   values(
+                     #{name},
+                     #{phone},
+                     #{email},
+                     #{aboutme},
+                     #{passwd},
+                     #{avatar},
+                     #{type},
+                     #{createTime},
+                     #{enable}
+                   )
+   </insert>
+    <!--更新用户信息-->
+    <update id="update">
+        update user
+        <set>
+            <if test="phone !=null and phone != '' ">
+                phone = #{phone},
+            </if>
+            <if test="name !=null and name != '' ">
+                name = #{name},
+            </if>
+            <if test="aboutme !=null and aboutme != '' ">
+                aboutme = #{aboutme},
+            </if>
+            <if test="passwd !=null and passwd != '' ">
+                passwd = #{passwd},
+            </if>
+            <if test="enable !=null and enable != 0">
+                enable = #{enable},
+            </if>
+        </set>
+        where email = #{email}
+    </update>
 
 </mapper>

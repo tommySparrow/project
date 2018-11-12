@@ -3,7 +3,11 @@ package com.house.userservice.service;
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.house.userservice.bean.User;
+import com.house.userservice.common.excection.UserException;
 import com.house.userservice.mapper.UserMapper;
+import com.house.userservice.utils.BeanHelper;
+import com.house.userservice.utils.HashUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -27,6 +31,9 @@ public class UserService {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private MailService mailService;
 
     @Value("${file.prefix}")
     private String imgPrefix;
@@ -67,5 +74,56 @@ public class UserService {
             u.setAvatar(imgPrefix+u.getAvatar());
         });
         return userList;
+    }
+
+    //注册用户
+    public boolean addUser(User user) {
+
+        String enableUrl = user.getEnableUrl();
+        String email = user.getEmail();
+        user.setPasswd(HashUtils.encryPassword(user.getPasswd()));
+        BeanHelper.onInsert(user);
+        //插入数据
+        userMapper.insert(user);
+
+        //发送激活邮件
+        registerNotify(email,enableUrl);
+        return true;
+    }
+
+    /**
+     * @ Author jmy
+     * @ Description //TODO User
+     * @ Date 2018/11/12
+     * @ Param [email, enableUrl]
+     * @ return void
+     * 发送激活邮件
+     **/
+    private void registerNotify(String email, String enableUrl) {
+
+        String randomKey = HashUtils.hashString(email)+ RandomStringUtils.random(10);
+        //缓存到Rediszhong
+        redisTemplate.opsForValue().set(randomKey, email);
+        redisTemplate.expire(randomKey, 1, TimeUnit.HOURS);
+
+        //发送邮件
+        String content = enableUrl +"?key="+  randomKey;
+        mailService.sendSimpleMail("房产激活邮件", content, email);
+    }
+
+
+    public boolean enable(String key) {
+
+        //从Redis中获取key对应的值信息
+        String value = redisTemplate.opsForValue().get(key);
+        if (Strings.isNullOrEmpty(key)){
+            throw new UserException(UserException.Type.USER_NOT_FOUND,"无效的key");
+        }
+        //更新数据库
+        User user = new User();
+        user.setEmail(value);
+        user.setEnable(1);
+        userMapper.update(user);
+        return true;
     }
 }

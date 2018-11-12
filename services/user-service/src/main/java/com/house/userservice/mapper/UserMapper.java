@@ -9,4 +9,8 @@ public interface UserMapper {
     User selectById (Long id);
 
     List<User> select(User user);
+
+    int insert(User user);
+
+    int update(User user);
 }
