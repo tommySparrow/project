@@ -227,4 +227,9 @@ public class UserService {
         //返回更新后的用户对象
         return userMapper.selectByEmail(user.getEmail());
     }
+
+    public String getKeyEmail(String key) {
+
+        return redisTemplate.opsForValue().get(key);
+    }
 }

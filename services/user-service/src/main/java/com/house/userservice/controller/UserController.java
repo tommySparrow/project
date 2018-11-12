@@ -92,4 +92,11 @@ public class UserController {
         return RestResponse.success(updateUser);
     }
 
+    @RequestMapping("/getKeyEmail")
+    public RestResponse<String> getKeyEmail(String key){
+
+        String email = userService.getKeyEmail(key);
+        return RestResponse.success(email);
+    }
+
 }
