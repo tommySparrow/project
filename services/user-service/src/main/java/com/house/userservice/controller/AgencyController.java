@@ -1,8 +1,12 @@
 package com.house.userservice.controller;
 
 import com.house.userservice.bean.Agency;
+import com.house.userservice.bean.User;
+import com.house.userservice.common.pages.PageParams;
+import com.house.userservice.common.respone.ListResponse;
 import com.house.userservice.config.respone.RestResponse;
 import com.house.userservice.service.AgencyService;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,4 +41,16 @@ public class AgencyController {
         return RestResponse.success(agencyList);
     }
 
+    @RequestMapping("/agentList")//分页显示经纪人
+    public RestResponse<ListResponse<User>> agentList(Integer offset,Integer limit){
+
+        //封装分页参数
+        PageParams pageParams = new PageParams();
+        pageParams.setOffset(offset);
+        pageParams.setLimit(limit);
+        //获取所有经纪人
+        Pair<List<User>,Long> pair = agencyService.getAllAgent(pageParams);
+        ListResponse<User> listResponse = ListResponse.build(pair.getKey(), pair.getValue());
+        return RestResponse.success(listResponse);
+    }
 }
