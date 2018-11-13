@@ -53,4 +53,18 @@ public class AgencyController {
         ListResponse<User> listResponse = ListResponse.build(pair.getKey(), pair.getValue());
         return RestResponse.success(listResponse);
     }
+
+    @RequestMapping("/agentDetail")//经纪人详情
+    public RestResponse<User> agentDetail(Long id){
+
+        User user = agencyService.getAgentDetail(id);
+        return RestResponse.success(user);
+    }
+
+    @RequestMapping("/agencyDetail")//经纪机构详情
+    public RestResponse<Agency> agencyDetail(Integer id){
+
+        Agency agency = agencyService.getAgencyDetail(id);
+        return RestResponse.success(agency);
+    }
 }

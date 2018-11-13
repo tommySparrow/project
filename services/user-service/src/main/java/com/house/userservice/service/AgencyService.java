@@ -56,4 +56,39 @@ public class AgencyService {
             user.setAvatar(imgPrefix+user.getAvatar());
         });
     }
+
+    public User getAgentDetail(Long id) {
+
+        //根据id获取经纪人信息
+        User user = new User();
+        user.setId(id);
+        user.setType(2);
+        List<User> userList = agencyMapper.selectAllAgent(user, new PageParams(1, 1));
+        if (!userList.isEmpty()) {
+            setImg(userList);
+            User u = userList.get(0);
+            //将经纪人关联的经纪机构也一并查询出来
+            Long agencyId = u.getAgencyId();
+            Agency agency = new Agency();
+            agency.setId(agencyId.intValue());
+            List<Agency> agencyList = agencyMapper.select(agency);
+            if (!agencyList.isEmpty()) {
+                 u.setAgencyName(agencyList.get(0).getName());
+            }
+            return u;
+        }
+        return null;
+    }
+
+    public Agency getAgencyDetail(Integer id) {
+
+        Agency agency = new Agency();
+        agency.setId(id);
+        List<Agency> agencyList = agencyMapper.select(agency);
+
+        if (agencyList.isEmpty()) {
+            return null;
+        }
+        return agencyList.get(0);
+    }
 }
