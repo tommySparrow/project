@@ -1,6 +1,7 @@
 package com.house.apigateway.mapper;
 
 import com.house.apigateway.bean.User;
+import com.house.apigateway.common.utils.Rests;
 import com.house.apigateway.config.http.GenericRest;
 import com.house.apigateway.config.respone.RestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +57,16 @@ public class UserMapper {
             throw new IllegalStateException("Can not add user");
         }
 
+    }
+
+    public boolean enable(String key) {
+
+        Rests.exc(() ->{
+            String url = Rests.toUrl(userServiceName, "/user/enable?key=" + key);
+            ResponseEntity<RestResponse<Object>> responseEntity =
+                    rest.get(url, new ParameterizedTypeReference<RestResponse<Object>>() {});
+            return responseEntity.getBody();
+        });
+        return true;
     }
 }

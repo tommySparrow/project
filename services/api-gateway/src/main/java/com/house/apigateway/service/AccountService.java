@@ -48,4 +48,9 @@ public class AccountService {
     userMapper.addUser(account);
     return true;
   }
+
+  public boolean enable(String key) {
+    userMapper.enable(key);
+    return true;
+  }
 }
