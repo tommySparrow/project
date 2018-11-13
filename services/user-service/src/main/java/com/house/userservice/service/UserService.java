@@ -220,7 +220,7 @@ public class UserService {
         if (user.getEmail().isEmpty()) {
             return null;
         }
-        if (Strings.isNullOrEmpty(user.getPasswd())){
+        if (!Strings.isNullOrEmpty(user.getPasswd())){
             user.setPasswd(HashUtils.encryPassword(user.getPasswd()));
         }
         userMapper.update(user);
