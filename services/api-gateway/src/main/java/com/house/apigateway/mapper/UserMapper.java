@@ -69,4 +69,24 @@ public class UserMapper {
         });
         return true;
     }
+
+
+    /**
+     * @ Author jmy
+     * @ Description 根据token获取user对象//TODO User
+     * @ Date 2018/11/14
+     * @ Param [value]
+     * @ return com.house.apigateway.bean.User
+     *
+     **/
+    public User getUserByToken(String token) {
+
+        String url  = "http://"+userServiceName+"/user/get?token="+token;
+        ResponseEntity<RestResponse<User>> responseEntity = rest.get(url, new ParameterizedTypeReference<RestResponse<User>>() {});
+        RestResponse<User> response = responseEntity.getBody();
+        if (response.getCode() != 0){
+            return null;
+        }
+        return response.getResult();
+    }
 }
