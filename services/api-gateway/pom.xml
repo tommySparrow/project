@@ -64,6 +64,12 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+        <!--hystrix 熔断器,结合actuator使用-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+        </dependency>
+
         <!-- spring-boot-configuration-processor 支持properties读取 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
