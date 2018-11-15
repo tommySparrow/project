@@ -4,6 +4,9 @@ import com.house.apigateway.bean.User;
 import com.house.apigateway.common.utils.Rests;
 import com.house.apigateway.config.http.GenericRest;
 import com.house.apigateway.config.respone.RestResponse;
+import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -18,6 +21,12 @@ import java.util.List;
  * @ Description：
  * @ throws
  */
+
+@DefaultProperties(groupKey="userMapper",
+        commandProperties={@HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds",value="2000")},
+        threadPoolProperties={@HystrixProperty(name="coreSize",value="10"),
+                              @HystrixProperty(name="maxQueueSize",value="1000")},
+        threadPoolKey="userMapper")
 @Repository
 public class UserMapper {
 
@@ -36,6 +45,7 @@ public class UserMapper {
      * 获取用户
      **/
 
+    @HystrixCommand
     public List<User> getUserList(User query) {
         ResponseEntity<RestResponse<List<User>>> resultEntity = rest.post("http://"+ userServiceName + "/user/getList",query, new ParameterizedTypeReference<RestResponse<List<User>>>() {});
         RestResponse<List<User>> restResponse  = resultEntity.getBody();
@@ -47,6 +57,7 @@ public class UserMapper {
     }
 
 
+    @HystrixCommand
     public User addUser(User account) {
         String url = "http://" + userServiceName + "/user/add";
         ResponseEntity<RestResponse<User>> responseEntity = rest.post(url,account, new ParameterizedTypeReference<RestResponse<User>>() {});
@@ -59,6 +70,7 @@ public class UserMapper {
 
     }
 
+    @HystrixCommand
     public boolean enable(String key) {
 
         Rests.exc(() ->{
@@ -79,6 +91,7 @@ public class UserMapper {
      * @ return com.house.apigateway.bean.User
      *
      **/
+    @HystrixCommand
     public User getUserByToken(String token) {
 
         String url  = "http://"+userServiceName+"/user/get?token="+token;
