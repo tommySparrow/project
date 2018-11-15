@@ -26,7 +26,7 @@ import java.util.List;
         commandProperties={@HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds",value="2000")},
         threadPoolProperties={@HystrixProperty(name="coreSize",value="10"),
                               @HystrixProperty(name="maxQueueSize",value="1000")},
-        threadPoolKey="userMapper")
+        threadPoolKey="userMapper") //隔离线程池配置
 @Repository
 public class UserMapper {
 
